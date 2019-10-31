@@ -4,39 +4,33 @@
       "protocol": "http://",
       "domain": "127.0.0.1",
       "region": "",
-      "aws_account":"",
+      "aws_account": "",
       "port": {
         "auth": 3000,
         "user": 3001,
         "tenant": 3003,
         "reg": 3004,
-        "sys": 3011,
-        "product": 3006,
-        "order": 3015
+        "sys": 3011
       },
-        "role": {
-          "sns":""
-        },
+      "role": {
+        "sns": ""
+      },
       "name": {
         "auth": "Authentication Manager",
         "user": "User Manager",
         "tenant": "Tenant Manager",
         "reg": "Tenant Registration Manager",
-        "sys": "System Registration Manager",
-        "product": "Product Manager",
-        "order": "Order Manager"
+        "sys": "System Registration Manager"
       },
       "table": {
         "user": "User",
-        "order": "Order",
-        "product": "Product",
         "tenant": "Tenant"
       },
       "userRole": {
-        "systemAdmin" : "SystemAdmin",
-        "systemUser" : "SystemUser",
-        "tenantAdmin" : "TenantAdmin",
-        "tenantUser" : "TenantUser"
+        "systemAdmin": "SystemAdmin",
+        "systemUser": "SystemUser",
+        "tenantAdmin": "TenantAdmin",
+        "tenantUser": "TenantUser"
       },
       "tier": {
         "system": "System Tier"
@@ -45,37 +39,31 @@
         "level": "debug"
       }
     },
-    "prod":{
+    "prod": {
       "protocol": "https://",
       "port": {
         "auth": 3000,
         "user": 3001,
         "tenant": 3003,
         "reg": 3004,
-        "sys": 3011,
-        "product": 3006,
-        "order": 3015
+        "sys": 3011
       },
       "name": {
         "auth": "Authentication Manager",
         "user": "User Manager",
         "tenant": "Tenant Manager",
         "reg": "Tenant Registration Manager",
-        "sys": "System Registration Manager",
-        "product": "Product Manager",
-        "order": "Order Manager"
+        "sys": "System Registration Manager"
       },
       "table": {
         "user": "User",
-        "order": "Order",
-        "product": "Product",
         "tenant": "Tenant"
       },
       "userRole": {
-        "systemAdmin" : "SystemAdmin",
-        "systemUser" : "SystemUser",
-        "tenantAdmin" : "TenantAdmin",
-        "tenantUser" : "TenantUser"
+        "systemAdmin": "SystemAdmin",
+        "systemUser": "SystemUser",
+        "tenantAdmin": "TenantAdmin",
+        "tenantUser": "TenantUser"
       },
       "tier": {
         "system": "System Tier"

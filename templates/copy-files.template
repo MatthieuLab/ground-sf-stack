@@ -41,10 +41,7 @@
                     "Ref": "TemplatePrefix"
                 },
                 "Objects": [
-                    "app/packages/client/client.zip",
                     "app/packages/auth-manager/auth-manager.zip",
-                    "app/packages/order-manager/order-manager.zip",
-                    "app/packages/product-manager/product-manager.zip",
                     "app/packages/system-registration/system-registration.zip",
                     "app/packages/tenant-registration/tenant-registration.zip",
                     "app/packages/tenant-manager/tenant-manager.zip",

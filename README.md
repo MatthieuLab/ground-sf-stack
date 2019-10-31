@@ -1,6 +1,6 @@
-# saas-identity-cognito
-## SaaS Identity and Isolation with Amazon Cognito on the AWS Cloud
+## ground-saas_base_stack
 
+## SaaS Identity and Isolation with Amazon Cognito on the AWS Cloud
 
 This Quick Start implements a high availability solution for identity and isolation in multi-tenant software as a service (SaaS) environments, using Amazon Cognito as the identity provider.
 
@@ -20,4 +20,4 @@ You can also use the AWS CloudFormation templates as a starting point for your o
 For architectural details, best practices, step-by-step instructions, and customization options, see the [deployment guide](https://fwd.aws/XKYDP).
 
 To post feedback, submit feature ideas, or report bugs, use the **Issues** section of this GitHub repo.
-If you'd like to submit code for this Quick Start, please review the [AWS Quick Start Contributor's Kit](https://aws-quickstart.github.io/). 
+If you'd like to submit code for this Quick Start, please review the [AWS Quick Start Contributor's Kit](https://aws-quickstart.github.io/).

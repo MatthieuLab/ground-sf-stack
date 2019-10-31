@@ -19,10 +19,6 @@ Parameters:
     Type: String
   TenantTable:
     Type: String
-  ProductTable:
-    Type: String
-  OrderTable:
-    Type: String
   Listener:
     Type: String
   Path:
@@ -283,8 +279,6 @@ Resources:
                 "ServiceUrl": "${ServiceUrl}",
                 "UserTable": "${UserTable}",
                 "TenantTable": "${TenantTable}",
-                "ProductTable": "${ProductTable}",
-                "OrderTable": "${OrderTable}",
                 "SnsRole": "${SnsRole}",
                 "Path": "${Path}",
                 "HealthCheck": "${HealthCheck}",

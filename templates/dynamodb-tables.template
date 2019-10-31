@@ -7,10 +7,6 @@ Parameters:
     Type: String
   TenantTableName:
     Type: String
-  ProductTableName:
-    Type: String
-  OrderTableName:
-    Type: String
 Resources:
   UserDynamoDBTable:
     Type: AWS::DynamoDB::Table
@@ -52,47 +48,9 @@ Resources:
         ReadCapacityUnits: '10'
         WriteCapacityUnits: '10'
       TableName: !Ref TenantTableName
-  ProductDynamoDBTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      AttributeDefinitions:
-      - AttributeName: tenantId
-        AttributeType: S
-      - AttributeName: productId
-        AttributeType: S
-      KeySchema:
-      - AttributeName: tenantId
-        KeyType: HASH
-      - AttributeName: productId
-        KeyType: RANGE
-      ProvisionedThroughput:
-        ReadCapacityUnits: '10'
-        WriteCapacityUnits: '10'
-      TableName: !Ref ProductTableName
-  OrderDynamoDBTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      AttributeDefinitions:
-      - AttributeName: tenantId
-        AttributeType: S
-      - AttributeName: orderId
-        AttributeType: S
-      KeySchema:
-      - AttributeName: tenantId
-        KeyType: HASH
-      - AttributeName: orderId
-        KeyType: RANGE
-      ProvisionedThroughput:
-        ReadCapacityUnits: '10'
-        WriteCapacityUnits: '10'
-      TableName: !Ref OrderTableName
 Outputs:
   UserTable:
     Value: !Ref UserDynamoDBTable
   TenantTable:
     Value: !Ref TenantDynamoDBTable
-  ProductTable:
-    Value: !Ref ProductDynamoDBTable
-  OrderTable:
-    Value: !Ref OrderDynamoDBTable
 ...

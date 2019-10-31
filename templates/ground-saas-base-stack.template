@@ -39,8 +39,6 @@ Metadata:
       Parameters:
       - UserTable
       - TenantTable
-      - ProductTable
-      - OrderTable
     ParameterLabels:
       AvailabilityZones:
         default: Availability Zones
@@ -63,21 +61,17 @@ Metadata:
       VPCID:
         default: VPC ID
       Email:
-        default: Email Address
+        default: matthieu@getground.io
       Company:
-        default: Company Name
+        default: Ground
       Firstname:
-        default: First Name
+        default: Matthieu
       Lastname:
-        default: Last Name
+        default: Labarriere
       UserTable:
         default: User
       TenantTable:
         default: Tenant
-      ProductTable:
-        default: Product
-      OrderTable:
-        default: Order
 Parameters:
   KeyPairName:
     Type: AWS::EC2::KeyPair::KeyName
@@ -111,7 +105,7 @@ Parameters:
     ConstraintDescription: Quick Start bucket name can include numbers, lowercase
       letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
       (-).
-    Default: aws-quickstart
+    Default: ground
     Description: S3 bucket name for the Quick Start assets. Quick Start bucket name
       can include numbers, lowercase letters, uppercase letters, and hyphens (-).
       It cannot start or end with a hyphen (-).
@@ -120,27 +114,27 @@ Parameters:
     AllowedPattern: ^[0-9a-zA-Z-/]*$
     ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
       uppercase letters, hyphens (-), and a forward slash (/) at the end of the prefix.
-    Default: saas-identity-cognito/
+    Default: ground-saas-base-stack/
     Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
       can include numbers, lowercase letters, uppercase letters, hyphens (-), and
       forward slash (/).
     Type: String
   Company:
     Type: String
-    Default: MyCompanyName
+    Default: Ground
     Description: The Name of the Company that will manage the Reference Architecture.
   Email:
     Type: String
     Description: The Email Address of the Sys Admin.
-    Default: email@example.com
+    Default: admin@getground.io
   Firstname:
     Type: String
     Description: The First Name of the Sys Admin.
-    Default: MyFirstName
+    Default: Matthieu
   Lastname:
     Type: String
     Description: The Last Name of the Sys Admin.
-    Default: MyLastName
+    Default: Labarriere
   UserTable:
     Type: String
     Description: The DynamoDB Table for Users of the Multi-Tenant System
@@ -149,14 +143,6 @@ Parameters:
     Type: String
     Description: The DynamoDB Table for Tenants of the Multi-Tenant System
     Default: Tenant
-  ProductTable:
-    Type: String
-    Description: The DynamoDB Table for Products of the Multi-Tenant System
-    Default: Product
-  OrderTable:
-    Type: String
-    Description: The DynamoDB Table for Orders of the Multi-Tenant System
-    Default: Order
 Rules:
   KeyPairsNotEmpty:
     Assertions:
@@ -239,25 +225,6 @@ Resources:
         S3BucketPrefix: !Ref QSS3KeyPrefix
   WaitHandleWebClient:
     Type: AWS::CloudFormation::WaitConditionHandle
-  WebClient:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/web-deployment-pipeline.template
-      Parameters:
-        ServiceUrl: !GetAtt API.Outputs.RootUrl
-        ServiceName: client
-        TemplateBucket: !GetAtt ZipFiles.Outputs.AssetBucket
-        TemplatePrefix: !Ref QSS3KeyPrefix
-        WaitURL: !Ref WaitHandleWebClient
-  WaitConditionWebClient:
-    Type: AWS::CloudFormation::WaitCondition
-    DependsOn:
-    - WebClient
-    Properties:
-      Handle:
-        Ref: WaitHandleWebClient
-      Timeout: '3600'
-      Count: '1'
   WebPerm:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -275,8 +242,6 @@ Resources:
       Parameters:
         UserTableName: !Ref UserTable
         TenantTableName: !Ref TenantTable
-        ProductTableName: !Ref ProductTable
-        OrderTableName: !Ref OrderTable
   WaitHandleUserService:
     Type: AWS::CloudFormation::WaitConditionHandle
   WaitHandleAuthService:
@@ -287,15 +252,8 @@ Resources:
     Type: AWS::CloudFormation::WaitConditionHandle
   WaitHandleSysService:
     Type: AWS::CloudFormation::WaitConditionHandle
-  WaitHandleProductService:
-    Type: AWS::CloudFormation::WaitConditionHandle
-  WaitHandleOrderService:
-    Type: AWS::CloudFormation::WaitConditionHandle
   UserService:
     Type: AWS::CloudFormation::Stack
-    DependsOn:
-    - WebClient
-    - WaitConditionWebClient
     Properties:
       TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/deployment-pipeline-test.template
       Parameters:
@@ -305,8 +263,6 @@ Resources:
         SnsRole: !GetAtt Role.Outputs.SNSRoleArn
         UserTable: !GetAtt DynamoDBTables.Outputs.UserTable
         TenantTable: !GetAtt DynamoDBTables.Outputs.TenantTable
-        ProductTable: !GetAtt DynamoDBTables.Outputs.ProductTable
-        OrderTable: !GetAtt DynamoDBTables.Outputs.OrderTable
         Listener: !GetAtt ALB.Outputs.Listener
         Path: /user*
         HealthCheck: /user/health
@@ -333,8 +289,6 @@ Resources:
         SnsRole: !GetAtt Role.Outputs.SNSRoleArn
         UserTable: !GetAtt DynamoDBTables.Outputs.UserTable
         TenantTable: !GetAtt DynamoDBTables.Outputs.TenantTable
-        ProductTable: !GetAtt DynamoDBTables.Outputs.ProductTable
-        OrderTable: !GetAtt DynamoDBTables.Outputs.OrderTable
         Listener: !GetAtt ALB.Outputs.Listener
         Path: /auth*
         HealthCheck: /auth/health
@@ -361,8 +315,6 @@ Resources:
         SnsRole: !GetAtt Role.Outputs.SNSRoleArn
         UserTable: !GetAtt DynamoDBTables.Outputs.UserTable
         TenantTable: !GetAtt DynamoDBTables.Outputs.TenantTable
-        ProductTable: !GetAtt DynamoDBTables.Outputs.ProductTable
-        OrderTable: !GetAtt DynamoDBTables.Outputs.OrderTable
         Listener: !GetAtt ALB.Outputs.Listener
         Path: /tenant*
         HealthCheck: /tenant/health
@@ -389,8 +341,6 @@ Resources:
         SnsRole: !GetAtt Role.Outputs.SNSRoleArn
         UserTable: !GetAtt DynamoDBTables.Outputs.UserTable
         TenantTable: !GetAtt DynamoDBTables.Outputs.TenantTable
-        ProductTable: !GetAtt DynamoDBTables.Outputs.ProductTable
-        OrderTable: !GetAtt DynamoDBTables.Outputs.OrderTable
         Listener: !GetAtt ALB.Outputs.Listener
         Path: /reg*
         HealthCheck: /reg/health
@@ -417,8 +367,6 @@ Resources:
         SnsRole: !GetAtt Role.Outputs.SNSRoleArn
         UserTable: !GetAtt DynamoDBTables.Outputs.UserTable
         TenantTable: !GetAtt DynamoDBTables.Outputs.TenantTable
-        ProductTable: !GetAtt DynamoDBTables.Outputs.ProductTable
-        OrderTable: !GetAtt DynamoDBTables.Outputs.OrderTable
         Listener: !GetAtt ALB.Outputs.Listener
         Path: /sys*
         HealthCheck: /sys/health
@@ -428,62 +376,6 @@ Resources:
         TemplateBucket: !GetAtt ZipFiles.Outputs.AssetBucket
         TemplatePrefix: !Ref QSS3KeyPrefix
         WaitURL: !Ref WaitHandleSysService
-        CloudFormationExecutionRole: !GetAtt Role.Outputs.CloudFormationExecutionRole
-        ArtifactBucket: !GetAtt BucketRepository.Outputs.ArtifactBucket
-        Repository: !GetAtt BucketRepository.Outputs.Repository
-  ProductService:
-    Type: AWS::CloudFormation::Stack
-    DependsOn:
-    - SysService
-    - WaitConditionSysService
-    Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/deployment-pipeline-test.template
-      Parameters:
-        VPC: !Ref VPCID
-        Cluster: !GetAtt ECS.Outputs.Cluster
-        ServiceUrl: !GetAtt API.Outputs.RootUrl
-        SnsRole: !GetAtt Role.Outputs.SNSRoleArn
-        UserTable: !GetAtt DynamoDBTables.Outputs.UserTable
-        TenantTable: !GetAtt DynamoDBTables.Outputs.TenantTable
-        ProductTable: !GetAtt DynamoDBTables.Outputs.ProductTable
-        OrderTable: !GetAtt DynamoDBTables.Outputs.OrderTable
-        Listener: !GetAtt ALB.Outputs.Listener
-        Path: /product*
-        HealthCheck: /product/health
-        ServiceName: product-manager
-        Priority: 7
-        ContainerPort: 3006
-        TemplateBucket: !GetAtt ZipFiles.Outputs.AssetBucket
-        TemplatePrefix: !Ref QSS3KeyPrefix
-        WaitURL: !Ref WaitHandleProductService
-        CloudFormationExecutionRole: !GetAtt Role.Outputs.CloudFormationExecutionRole
-        ArtifactBucket: !GetAtt BucketRepository.Outputs.ArtifactBucket
-        Repository: !GetAtt BucketRepository.Outputs.Repository
-  OrderService:
-    Type: AWS::CloudFormation::Stack
-    DependsOn:
-    - ProductService
-    - WaitConditionProductService
-    Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/deployment-pipeline-test.template
-      Parameters:
-        VPC: !Ref VPCID
-        Cluster: !GetAtt ECS.Outputs.Cluster
-        ServiceUrl: !GetAtt API.Outputs.RootUrl
-        SnsRole: !GetAtt Role.Outputs.SNSRoleArn
-        UserTable: !GetAtt DynamoDBTables.Outputs.UserTable
-        TenantTable: !GetAtt DynamoDBTables.Outputs.TenantTable
-        ProductTable: !GetAtt DynamoDBTables.Outputs.ProductTable
-        OrderTable: !GetAtt DynamoDBTables.Outputs.OrderTable
-        Listener: !GetAtt ALB.Outputs.Listener
-        Path: /order*
-        HealthCheck: /order/health
-        ServiceName: order-manager
-        Priority: 8
-        ContainerPort: 3015
-        TemplateBucket: !GetAtt ZipFiles.Outputs.AssetBucket
-        TemplatePrefix: !Ref QSS3KeyPrefix
-        WaitURL: !Ref WaitHandleOrderService
         CloudFormationExecutionRole: !GetAtt Role.Outputs.CloudFormationExecutionRole
         ArtifactBucket: !GetAtt BucketRepository.Outputs.ArtifactBucket
         Repository: !GetAtt BucketRepository.Outputs.Repository
@@ -532,24 +424,6 @@ Resources:
         Ref: WaitHandleSysService
       Timeout: '3600'
       Count: '1'
-  WaitConditionProductService:
-    Type: AWS::CloudFormation::WaitCondition
-    DependsOn:
-    - ProductService
-    Properties:
-      Handle:
-        Ref: WaitHandleProductService
-      Timeout: '3600'
-      Count: '1'
-  WaitConditionOrderService:
-    Type: AWS::CloudFormation::WaitCondition
-    DependsOn:
-    - OrderService
-    Properties:
-      Handle:
-        Ref: WaitHandleOrderService
-      Timeout: '3600'
-      Count: '1'
   UserServiceCleanup:
     Type: AWS::CloudFormation::Stack
     DependsOn: Role
@@ -590,22 +464,6 @@ Resources:
       Parameters:
         ServiceToken: !GetAtt Role.Outputs.CleanupRole
         Stack: !GetAtt SysService.Outputs.ServiceStack
-  ProductServiceCleanup:
-    Type: AWS::CloudFormation::Stack
-    DependsOn: Role
-    Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/clean-cfnstack.template
-      Parameters:
-        ServiceToken: !GetAtt Role.Outputs.CleanupRole
-        Stack: !GetAtt ProductService.Outputs.ServiceStack
-  OrderServiceCleanup:
-    Type: AWS::CloudFormation::Stack
-    DependsOn: Role
-    Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/clean-cfnstack.template
-      Parameters:
-        ServiceToken: !GetAtt Role.Outputs.CleanupRole
-        Stack: !GetAtt OrderService.Outputs.ServiceStack
   BucketRepositoryCleanup:
     Type: AWS::CloudFormation::Stack
     DependsOn: Role
@@ -617,22 +475,6 @@ Resources:
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
         RoleArn: !GetAtt Role.Outputs.CleanupRole
-  WebClientCleanup:
-    Type: AWS::CloudFormation::Stack
-    DependsOn: Role
-    Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/clean-bucket.template
-      Parameters:
-        Bucket: !GetAtt WebClient.Outputs.WebBucket
-        ServiceToken: !GetAtt Role.Outputs.CleanupRole
-  WebArtifactCleanup:
-    Type: AWS::CloudFormation::Stack
-    DependsOn: Role
-    Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/clean-bucket.template
-      Parameters:
-        Bucket: !GetAtt WebClient.Outputs.ArtifactBucket
-        ServiceToken: !GetAtt Role.Outputs.CleanupRole
   ZipFilesCleanup:
     Type: AWS::CloudFormation::Stack
     DependsOn: Role
@@ -649,15 +491,11 @@ Resources:
     - WaitConditionTenantService
     - WaitConditionRegService
     - WaitConditionSysService
-    - WaitConditionProductService
-    - WaitConditionOrderService
     - UserService
     - AuthService
     - TenantService
     - RegService
     - SysService
-    - ProductService
-    - OrderService
     - SysAdminCleanup
     Properties:
       TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/rest-request-create.template
@@ -678,22 +516,16 @@ Resources:
     - WaitConditionTenantService
     - WaitConditionRegService
     - WaitConditionSysService
-    - WaitConditionProductService
-    - WaitConditionOrderService
     - UserService
     - AuthService
     - TenantService
     - RegService
     - SysService
-    - ProductService
-    - OrderService
     - UserServiceCleanup
     - AuthServiceCleanup
     - TenantServiceCleanup
     - RegServiceCleanup
     - SysServiceCleanup
-    - ProductServiceCleanup
-    - OrderServiceCleanup
     - ZipFilesCleanup
     - BucketRepositoryCleanup
     Properties:
@@ -713,7 +545,4 @@ Outputs:
   ApiUrl:
     Description: The URL endpoint for the product service
     Value: !GetAtt API.Outputs.RootUrl
-  Website:
-    Description: The URL endpoint for the product service
-    Value: !GetAtt WebClient.Outputs.Website
 ...
