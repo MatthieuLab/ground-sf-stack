@@ -17,7 +17,7 @@
   },
   {
     "ParameterKey": "KeyPairName",
-    "ParameterValue": "$[alfred_getkeypair]"
+    "ParameterValue": "GroundPair"
   },
   {
     "ParameterKey": "Lastname",
@@ -25,7 +25,7 @@
   },
   {
     "ParameterKey": "TenantTable",
-    "ParameterValue": "$[taskcat_genuuid]"
+    "ParameterValue": "Tenant-Saas"
   },
   {
     "ParameterKey": "InstanceType",
@@ -33,7 +33,7 @@
   },
   {
     "ParameterKey": "UserTable",
-    "ParameterValue": "$[taskcat_genuuid]"
+    "ParameterValue": "User-Saas"
   },
   {
     "ParameterKey": "QSS3BucketName",
