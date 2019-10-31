@@ -219,5 +219,5 @@ Resources:
           !GetAtt
           - VPCStack
           - Outputs.VPCID
-Outputs:
+
 ...

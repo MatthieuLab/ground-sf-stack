@@ -223,14 +223,6 @@ Resources:
         ServiceUrl: !GetAtt ALB.Outputs.LoadBalancerUrl
         S3Bucket: !GetAtt ZipFiles.Outputs.AssetBucket
         S3BucketPrefix: !Ref QSS3KeyPrefix
-  WaitHandleWebClient:
-    Type: AWS::CloudFormation::WaitConditionHandle
-  WebPerm:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/bucket-public-read.template
-      Parameters:
-        Bucket: !GetAtt WebClient.Outputs.WebBucket
   BucketRepository:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -543,6 +535,6 @@ Outputs:
     Description: The URL endpoint for the product service
     Value: !GetAtt ALB.Outputs.LoadBalancerUrl
   ApiUrl:
-    Description: The URL endpoint for the product service
+    Description: The URL endpoint for the product service!
     Value: !GetAtt API.Outputs.RootUrl
 ...
