@@ -48,6 +48,7 @@
                     "app/packages/user-manager/user-manager.zip",
                     "templates/service.template.zip",
                     "templates/config.template.zip",
+                    "templates/ground-appsync.zip",
                     "functions/packages/rest-request-create/rest-request-create.zip",
                     "functions/packages/rest-request-delete/rest-request-delete.zip",
                     "functions/packages/custom-authorizer/custom-authorizer.zip"

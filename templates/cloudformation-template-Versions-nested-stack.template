@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: VersionsNestedStack nested stack
+Parameters:
+  DynamodbstreamLambdaFunctionParameter:
+    Type: String
+  PostdeploymentLambdaFunctionParameter:
+    Type: String
+Resources:
+  DynamodbstreamLambdaVersionSYzqeM1dXNopDiOBbdpYvzGsI40RJHemAtsQBjWY:
+    Type: 'AWS::Lambda::Version'
+    DeletionPolicy: Retain
+    Properties:
+      FunctionName: !Ref DynamodbstreamLambdaFunctionParameter
+      CodeSha256: eOvhV9FsTbKbZDm4weRGQvS0Qc64UFCtYOz/k9K+70Y=
+      Description: Stream data from DynamoDB to ElasticSearch
+    DependsOn: []
+  PostdeploymentLambdaVersionMaw1Wb3ksrvr8LpdGjYvWMiKAjGvo0fxlgbMZWLNT4:
+    Type: 'AWS::Lambda::Version'
+    DeletionPolicy: Retain
+    Properties:
+      FunctionName: !Ref PostdeploymentLambdaFunctionParameter
+      CodeSha256: eOvhV9FsTbKbZDm4weRGQvS0Qc64UFCtYOz/k9K+70Y=
+      Description: Update resources post deployment
+    DependsOn: []
+Outputs:
+  PostdeploymentLambdaVersionMaw1Wb3ksrvr8LpdGjYvWMiKAjGvo0fxlgbMZWLNT4:
+    Value: !Ref PostdeploymentLambdaVersionMaw1Wb3ksrvr8LpdGjYvWMiKAjGvo0fxlgbMZWLNT4
+  DynamodbstreamLambdaVersionSYzqeM1dXNopDiOBbdpYvzGsI40RJHemAtsQBjWY:
+    Value: !Ref DynamodbstreamLambdaVersionSYzqeM1dXNopDiOBbdpYvzGsI40RJHemAtsQBjWY

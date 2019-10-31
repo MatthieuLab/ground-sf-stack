@@ -3,7 +3,7 @@ global:
   owner: matthieu@getground.io
   qsname: ground-saas-base-stack
   regions:
-    - eu-central-1
+    - us-west-2
   reporting: true
 tests:
   saas-id-cognito:

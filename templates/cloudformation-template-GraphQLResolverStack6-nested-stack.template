@@ -1,0 +1,1391 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: GraphQLResolverStack6NestedStack nested stack
+Parameters:
+  GraphQlDsAttributeDataSourceNameParameter:
+    Type: String
+  GraphQlApiApiIdParameter:
+    Type: String
+  GraphQlDsBackOfficeUserDataSourceNameParameter:
+    Type: String
+  GraphQlDsBackOfficeUserRoleDataSourceNameParameter:
+    Type: String
+  GraphQlDsBackOfficeUserRoleBackOfficeUserDataSourceNameParameter:
+    Type: String
+  GraphQlDsCenterDataSourceNameParameter:
+    Type: String
+  GraphQlDsNewsDataSourceNameParameter:
+    Type: String
+  GraphQlDsClosedDayDataSourceNameParameter:
+    Type: String
+  GraphQlDsDaySlotDataSourceNameParameter:
+    Type: String
+  GraphQlDsUserDataSourceNameParameter:
+    Type: String
+  GraphQlDsGlobalOrderDataSourceNameParameter:
+    Type: String
+  GraphQlDsGroupDataSourceNameParameter:
+    Type: String
+  GraphQlDsGroupBackOfficeUserDataSourceNameParameter:
+    Type: String
+  GraphQlDsHighlightDataSourceNameParameter:
+    Type: String
+  GraphQlDsHoursRangeDataSourceNameParameter:
+    Type: String
+  GraphQlDsOrderDataSourceNameParameter:
+    Type: String
+  GraphQlDsOrderItemDataSourceNameParameter:
+    Type: String
+  GraphQlDsParticipationDataSourceNameParameter:
+    Type: String
+  GraphQlDsPriceUnitDataSourceNameParameter:
+    Type: String
+  GraphQlDsProviderDataSourceNameParameter:
+    Type: String
+  GraphQlDsServiceDataSourceNameParameter:
+    Type: String
+  GraphQlDsUnavailabilityDataSourceNameParameter:
+    Type: String
+  GraphQlDsUserRoleDataSourceNameParameter:
+    Type: String
+  GraphQlDsElasticSearchDataSourceNameParameter:
+    Type: String
+Resources:
+  GraphQlResolverQuerygetAttribute:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Query
+      FieldName: getAttribute
+      RequestMappingTemplate: |-
+        {
+          "version": "2017-02-28",
+          "operation": "GetItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id": $util.dynamodb.toDynamoDBJson($ctx.args.id)
+        } #end
+        }
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsAttributeDataSourceNameParameter
+  GraphQlResolverQuerygetBackOfficeUser:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Query
+      FieldName: getBackOfficeUser
+      RequestMappingTemplate: |-
+        {
+          "version": "2017-02-28",
+          "operation": "GetItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id": $util.dynamodb.toDynamoDBJson($ctx.args.id)
+        } #end
+        }
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsBackOfficeUserDataSourceNameParameter
+  GraphQlResolverMutationcreateBackOfficeUserRole:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Mutation
+      FieldName: createBackOfficeUserRole
+      RequestMappingTemplate: >-
+        ## [Start] Prepare DynamoDB PutItem Request. **
+
+        $util.qr($context.args.input.put("createdAt",
+        $util.defaultIfNull($ctx.args.input.createdAt,
+        $util.time.nowISO8601())))
+
+        $util.qr($context.args.input.put("updatedAt",
+        $util.defaultIfNull($ctx.args.input.updatedAt,
+        $util.time.nowISO8601())))
+
+        $util.qr($context.args.input.put("__typename", "BackOfficeUserRole"))
+
+        {
+          "version": "2017-02-28",
+          "operation": "PutItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id":   $util.dynamodb.toDynamoDBJson($util.defaultIfNullOrBlank($ctx.args.input.id, $util.autoId()))
+        } #end,
+          "attributeValues": $util.dynamodb.toMapValuesJson($context.args.input),
+          "condition": {
+              "expression": "attribute_not_exists(#id)",
+              "expressionNames": {
+                  "#id": "id"
+            }
+          }
+        }
+
+        ## [End] Prepare DynamoDB PutItem Request. **
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsBackOfficeUserRoleDataSourceNameParameter
+  GraphQlResolverMutationupdateBackOfficeUserRoleBackOfficeUser:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Mutation
+      FieldName: updateBackOfficeUserRoleBackOfficeUser
+      RequestMappingTemplate: >-
+        #if( $authCondition && $authCondition.expression != "" )
+          #set( $condition = $authCondition )
+          #if( $modelObjectKey )
+            #foreach( $entry in $modelObjectKey.entrySet() )
+              $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#keyCondition$velocityCount)"))
+              $util.qr($condition.expressionNames.put("#keyCondition$velocityCount", "$entry.key"))
+            #end
+          #else
+            $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#id)"))
+            $util.qr($condition.expressionNames.put("#id", "id"))
+          #end
+        #else
+          #if( $modelObjectKey )
+            #set( $condition = {
+          "expression": "",
+          "expressionNames": {},
+          "expressionValues": {}
+        } )
+            #foreach( $entry in $modelObjectKey.entrySet() )
+              #if( $velocityCount == 1 )
+                $util.qr($condition.put("expression", "attribute_exists(#keyCondition$velocityCount)"))
+              #else
+                $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#keyCondition$velocityCount)"))
+              #end
+              $util.qr($condition.expressionNames.put("#keyCondition$velocityCount", "$entry.key"))
+            #end
+          #else
+            #set( $condition = {
+          "expression": "attribute_exists(#id)",
+          "expressionNames": {
+              "#id": "id"
+          },
+          "expressionValues": {}
+        } )
+          #end
+        #end
+
+        ## Automatically set the updatedAt timestamp. **
+
+        $util.qr($context.args.input.put("updatedAt",
+        $util.defaultIfNull($ctx.args.input.updatedAt,
+        $util.time.nowISO8601())))
+
+        $util.qr($context.args.input.put("__typename",
+        "BackOfficeUserRoleBackOfficeUser"))
+
+        ## Update condition if type is @versioned **
+
+        #if( $versionedCondition )
+          $util.qr($condition.put("expression", "($condition.expression) AND $versionedCondition.expression"))
+          $util.qr($condition.expressionNames.putAll($versionedCondition.expressionNames))
+          $util.qr($condition.expressionValues.putAll($versionedCondition.expressionValues))
+        #end
+
+        #set( $expNames = {} )
+
+        #set( $expValues = {} )
+
+        #set( $expSet = {} )
+
+        #set( $expAdd = {} )
+
+        #set( $expRemove = [] )
+
+        #if( $modelObjectKey )
+          #set( $keyFields = [] )
+          #foreach( $entry in $modelObjectKey.entrySet() )
+            $util.qr($keyFields.add("$entry.key"))
+          #end
+        #else
+          #set( $keyFields = ["id"] )
+        #end
+
+        #foreach( $entry in $util.map.copyAndRemoveAllKeys($context.args.input,
+        $keyFields).entrySet() )
+          #if( !$util.isNull($dynamodbNameOverrideMap) && $dynamodbNameOverrideMap.containsKey("$entry.key") )
+            #set( $entryKeyAttributeName = $dynamodbNameOverrideMap.get("$entry.key") )
+          #else
+            #set( $entryKeyAttributeName = $entry.key )
+          #end
+          #if( $util.isNull($entry.value) )
+            #set( $discard = $expRemove.add("#$entryKeyAttributeName") )
+            $util.qr($expNames.put("#$entryKeyAttributeName", "$entry.key"))
+          #else
+            $util.qr($expSet.put("#$entryKeyAttributeName", ":$entryKeyAttributeName"))
+            $util.qr($expNames.put("#$entryKeyAttributeName", "$entry.key"))
+            $util.qr($expValues.put(":$entryKeyAttributeName", $util.dynamodb.toDynamoDB($entry.value)))
+          #end
+        #end
+
+        #set( $expression = "" )
+
+        #if( !$expSet.isEmpty() )
+          #set( $expression = "SET" )
+          #foreach( $entry in $expSet.entrySet() )
+            #set( $expression = "$expression $entry.key = $entry.value" )
+            #if( $foreach.hasNext() )
+              #set( $expression = "$expression," )
+            #end
+          #end
+        #end
+
+        #if( !$expAdd.isEmpty() )
+          #set( $expression = "$expression ADD" )
+          #foreach( $entry in $expAdd.entrySet() )
+            #set( $expression = "$expression $entry.key $entry.value" )
+            #if( $foreach.hasNext() )
+              #set( $expression = "$expression," )
+            #end
+          #end
+        #end
+
+        #if( !$expRemove.isEmpty() )
+          #set( $expression = "$expression REMOVE" )
+          #foreach( $entry in $expRemove )
+            #set( $expression = "$expression $entry" )
+            #if( $foreach.hasNext() )
+              #set( $expression = "$expression," )
+            #end
+          #end
+        #end
+
+        #set( $update = {} )
+
+        $util.qr($update.put("expression", "$expression"))
+
+        #if( !$expNames.isEmpty() )
+          $util.qr($update.put("expressionNames", $expNames))
+        #end
+
+        #if( !$expValues.isEmpty() )
+          $util.qr($update.put("expressionValues", $expValues))
+        #end
+
+        {
+          "version": "2017-02-28",
+          "operation": "UpdateItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id": {
+              "S": "$context.args.input.id"
+          }
+        } #end,
+          "update": $util.toJson($update),
+          "condition": $util.toJson($condition)
+        }
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsBackOfficeUserRoleBackOfficeUserDataSourceNameParameter
+  GraphQlResolverQuerylistCenters:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Query
+      FieldName: listCenters
+      RequestMappingTemplate: |-
+        #set( $limit = $util.defaultIfNull($context.args.limit, 10) )
+        #set( $ListRequest = {
+          "version": "2017-02-28",
+          "limit": $limit
+        } )
+        #if( $context.args.nextToken )
+          #set( $ListRequest.nextToken = "$context.args.nextToken" )
+        #end
+        #if( $context.args.filter )
+          #set( $ListRequest.filter = $util.parseJson("$util.transform.toDynamoDBFilterExpression($ctx.args.filter)") )
+        #end
+        #if( !$util.isNull($modelQueryExpression)
+                                && !$util.isNullOrEmpty($modelQueryExpression.expression) )
+          $util.qr($ListRequest.put("operation", "Query"))
+          $util.qr($ListRequest.put("query", $modelQueryExpression))
+          #if( !$util.isNull($ctx.args.sortDirection) && $ctx.args.sortDirection == "DESC" )
+            #set( $ListRequest.scanIndexForward = false )
+          #else
+            #set( $ListRequest.scanIndexForward = true )
+          #end
+        #else
+          $util.qr($ListRequest.put("operation", "Scan"))
+        #end
+        $util.toJson($ListRequest)
+      ResponseMappingTemplate: $util.toJson($ctx.result)
+      DataSourceName: !Ref GraphQlDsCenterDataSourceNameParameter
+  GraphQlResolverCenternews:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Center
+      FieldName: news
+      RequestMappingTemplate: |-
+        #set( $limit = $util.defaultIfNull($context.args.limit, 10) )
+        #set( $query = {
+          "expression": "#connectionAttribute = :connectionAttribute",
+          "expressionNames": {
+              "#connectionAttribute": "centerNewsId"
+          },
+          "expressionValues": {
+              ":connectionAttribute": {
+                  "S": "$context.source.id"
+            }
+          }
+        } )
+        {
+          "version": "2017-02-28",
+          "operation": "Query",
+          "query":   $util.toJson($query),
+          "scanIndexForward":   #if( $context.args.sortDirection )
+            #if( $context.args.sortDirection == "ASC" )
+        true
+            #else
+        false
+            #end
+          #else
+        true
+          #end,
+          "filter":   #if( $context.args.filter )
+        $util.transform.toDynamoDBFilterExpression($ctx.args.filter)
+          #else
+        null
+          #end,
+          "limit": $limit,
+          "nextToken":   #if( $context.args.nextToken )
+        "$context.args.nextToken"
+          #else
+        null
+          #end,
+          "index": "gsi-Center.news"
+        }
+      ResponseMappingTemplate: |-
+        #if( !$result )
+          #set( $result = $ctx.result )
+        #end
+        $util.toJson($result)
+      DataSourceName: !Ref GraphQlDsNewsDataSourceNameParameter
+  GraphQlResolverQuerylistClosedDays:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Query
+      FieldName: listClosedDays
+      RequestMappingTemplate: |-
+        #set( $limit = $util.defaultIfNull($context.args.limit, 10) )
+        #set( $ListRequest = {
+          "version": "2017-02-28",
+          "limit": $limit
+        } )
+        #if( $context.args.nextToken )
+          #set( $ListRequest.nextToken = "$context.args.nextToken" )
+        #end
+        #if( $context.args.filter )
+          #set( $ListRequest.filter = $util.parseJson("$util.transform.toDynamoDBFilterExpression($ctx.args.filter)") )
+        #end
+        #if( !$util.isNull($modelQueryExpression)
+                                && !$util.isNullOrEmpty($modelQueryExpression.expression) )
+          $util.qr($ListRequest.put("operation", "Query"))
+          $util.qr($ListRequest.put("query", $modelQueryExpression))
+          #if( !$util.isNull($ctx.args.sortDirection) && $ctx.args.sortDirection == "DESC" )
+            #set( $ListRequest.scanIndexForward = false )
+          #else
+            #set( $ListRequest.scanIndexForward = true )
+          #end
+        #else
+          $util.qr($ListRequest.put("operation", "Scan"))
+        #end
+        $util.toJson($ListRequest)
+      ResponseMappingTemplate: $util.toJson($ctx.result)
+      DataSourceName: !Ref GraphQlDsClosedDayDataSourceNameParameter
+  GraphQlResolverQuerylistDaySlots:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Query
+      FieldName: listDaySlots
+      RequestMappingTemplate: |-
+        #set( $limit = $util.defaultIfNull($context.args.limit, 10) )
+        #set( $ListRequest = {
+          "version": "2017-02-28",
+          "limit": $limit
+        } )
+        #if( $context.args.nextToken )
+          #set( $ListRequest.nextToken = "$context.args.nextToken" )
+        #end
+        #if( $context.args.filter )
+          #set( $ListRequest.filter = $util.parseJson("$util.transform.toDynamoDBFilterExpression($ctx.args.filter)") )
+        #end
+        #if( !$util.isNull($modelQueryExpression)
+                                && !$util.isNullOrEmpty($modelQueryExpression.expression) )
+          $util.qr($ListRequest.put("operation", "Query"))
+          $util.qr($ListRequest.put("query", $modelQueryExpression))
+          #if( !$util.isNull($ctx.args.sortDirection) && $ctx.args.sortDirection == "DESC" )
+            #set( $ListRequest.scanIndexForward = false )
+          #else
+            #set( $ListRequest.scanIndexForward = true )
+          #end
+        #else
+          $util.qr($ListRequest.put("operation", "Scan"))
+        #end
+        $util.toJson($ListRequest)
+      ResponseMappingTemplate: $util.toJson($ctx.result)
+      DataSourceName: !Ref GraphQlDsDaySlotDataSourceNameParameter
+  GraphQlResolverEventauthor:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Event
+      FieldName: author
+      RequestMappingTemplate: |-
+        {
+          "version": "2017-02-28",
+          "operation": "GetItem",
+          "key": {
+              "id": $util.dynamodb.toDynamoDBJson($util.defaultIfNullOrBlank($ctx.source.eventAuthorId, "___xamznone____"))
+          }
+        }
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsUserDataSourceNameParameter
+  GraphQlResolverQuerygetGlobalOrder:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Query
+      FieldName: getGlobalOrder
+      RequestMappingTemplate: |-
+        {
+          "version": "2017-02-28",
+          "operation": "GetItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id": $util.dynamodb.toDynamoDBJson($ctx.args.id)
+        } #end
+        }
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsGlobalOrderDataSourceNameParameter
+  GraphQlResolverQuerylistGroups:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Query
+      FieldName: listGroups
+      RequestMappingTemplate: |-
+        #set( $limit = $util.defaultIfNull($context.args.limit, 10) )
+        #set( $ListRequest = {
+          "version": "2017-02-28",
+          "limit": $limit
+        } )
+        #if( $context.args.nextToken )
+          #set( $ListRequest.nextToken = "$context.args.nextToken" )
+        #end
+        #if( $context.args.filter )
+          #set( $ListRequest.filter = $util.parseJson("$util.transform.toDynamoDBFilterExpression($ctx.args.filter)") )
+        #end
+        #if( !$util.isNull($modelQueryExpression)
+                                && !$util.isNullOrEmpty($modelQueryExpression.expression) )
+          $util.qr($ListRequest.put("operation", "Query"))
+          $util.qr($ListRequest.put("query", $modelQueryExpression))
+          #if( !$util.isNull($ctx.args.sortDirection) && $ctx.args.sortDirection == "DESC" )
+            #set( $ListRequest.scanIndexForward = false )
+          #else
+            #set( $ListRequest.scanIndexForward = true )
+          #end
+        #else
+          $util.qr($ListRequest.put("operation", "Scan"))
+        #end
+        $util.toJson($ListRequest)
+      ResponseMappingTemplate: $util.toJson($ctx.result)
+      DataSourceName: !Ref GraphQlDsGroupDataSourceNameParameter
+  GraphQlResolverMutationdeleteGroupBackOfficeUser:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Mutation
+      FieldName: deleteGroupBackOfficeUser
+      RequestMappingTemplate: |-
+        #if( $authCondition )
+          #set( $condition = $authCondition )
+          #if( $modelObjectKey )
+            #foreach( $entry in $modelObjectKey.entrySet() )
+              $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#keyCondition$velocityCount)"))
+              $util.qr($condition.expressionNames.put("#keyCondition$velocityCount", "$entry.key"))
+            #end
+          #else
+            $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#id)"))
+            $util.qr($condition.expressionNames.put("#id", "id"))
+          #end
+        #else
+          #if( $modelObjectKey )
+            #set( $condition = {
+          "expression": "",
+          "expressionNames": {}
+        } )
+            #foreach( $entry in $modelObjectKey.entrySet() )
+              #if( $velocityCount == 1 )
+                $util.qr($condition.put("expression", "attribute_exists(#keyCondition$velocityCount)"))
+              #else
+                $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#keyCondition$velocityCount)"))
+              #end
+              $util.qr($condition.expressionNames.put("#keyCondition$velocityCount", "$entry.key"))
+            #end
+          #else
+            #set( $condition = {
+          "expression": "attribute_exists(#id)",
+          "expressionNames": {
+              "#id": "id"
+          }
+        } )
+          #end
+        #end
+        #if( $versionedCondition )
+          $util.qr($condition.put("expression", "($condition.expression) AND $versionedCondition.expression"))
+          $util.qr($condition.expressionNames.putAll($versionedCondition.expressionNames))
+          #set( $expressionValues = $util.defaultIfNull($condition.expressionValues, {}) )
+          $util.qr($expressionValues.putAll($versionedCondition.expressionValues))
+          #set( $condition.expressionValues = $expressionValues )
+        #end
+        {
+          "version": "2017-02-28",
+          "operation": "DeleteItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id": $util.dynamodb.toDynamoDBJson($ctx.args.input.id)
+        } #end,
+          "condition": $util.toJson($condition)
+        }
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsGroupBackOfficeUserDataSourceNameParameter
+  GraphQlResolverQuerygetHighlight:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Query
+      FieldName: getHighlight
+      RequestMappingTemplate: |-
+        {
+          "version": "2017-02-28",
+          "operation": "GetItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id": $util.dynamodb.toDynamoDBJson($ctx.args.id)
+        } #end
+        }
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsHighlightDataSourceNameParameter
+  GraphQlResolverMutationcreateHoursRange:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Mutation
+      FieldName: createHoursRange
+      RequestMappingTemplate: >-
+        ## [Start] Prepare DynamoDB PutItem Request. **
+
+        $util.qr($context.args.input.put("createdAt",
+        $util.defaultIfNull($ctx.args.input.createdAt,
+        $util.time.nowISO8601())))
+
+        $util.qr($context.args.input.put("updatedAt",
+        $util.defaultIfNull($ctx.args.input.updatedAt,
+        $util.time.nowISO8601())))
+
+        $util.qr($context.args.input.put("__typename", "HoursRange"))
+
+        {
+          "version": "2017-02-28",
+          "operation": "PutItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id":   $util.dynamodb.toDynamoDBJson($util.defaultIfNullOrBlank($ctx.args.input.id, $util.autoId()))
+        } #end,
+          "attributeValues": $util.dynamodb.toMapValuesJson($context.args.input),
+          "condition": {
+              "expression": "attribute_not_exists(#id)",
+              "expressionNames": {
+                  "#id": "id"
+            }
+          }
+        }
+
+        ## [End] Prepare DynamoDB PutItem Request. **
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsHoursRangeDataSourceNameParameter
+  GraphQlResolverQuerylistNewss:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Query
+      FieldName: listNewss
+      RequestMappingTemplate: |-
+        #set( $limit = $util.defaultIfNull($context.args.limit, 10) )
+        #set( $ListRequest = {
+          "version": "2017-02-28",
+          "limit": $limit
+        } )
+        #if( $context.args.nextToken )
+          #set( $ListRequest.nextToken = "$context.args.nextToken" )
+        #end
+        #if( $context.args.filter )
+          #set( $ListRequest.filter = $util.parseJson("$util.transform.toDynamoDBFilterExpression($ctx.args.filter)") )
+        #end
+        #if( !$util.isNull($modelQueryExpression)
+                                && !$util.isNullOrEmpty($modelQueryExpression.expression) )
+          $util.qr($ListRequest.put("operation", "Query"))
+          $util.qr($ListRequest.put("query", $modelQueryExpression))
+          #if( !$util.isNull($ctx.args.sortDirection) && $ctx.args.sortDirection == "DESC" )
+            #set( $ListRequest.scanIndexForward = false )
+          #else
+            #set( $ListRequest.scanIndexForward = true )
+          #end
+        #else
+          $util.qr($ListRequest.put("operation", "Scan"))
+        #end
+        $util.toJson($ListRequest)
+      ResponseMappingTemplate: $util.toJson($ctx.result)
+      DataSourceName: !Ref GraphQlDsNewsDataSourceNameParameter
+  GraphQlResolverOperatorcenters:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Operator
+      FieldName: centers
+      RequestMappingTemplate: |-
+        #set( $limit = $util.defaultIfNull($context.args.limit, 10) )
+        #set( $query = {
+          "expression": "#connectionAttribute = :connectionAttribute",
+          "expressionNames": {
+              "#connectionAttribute": "centerOperatorId"
+          },
+          "expressionValues": {
+              ":connectionAttribute": {
+                  "S": "$context.source.id"
+            }
+          }
+        } )
+        {
+          "version": "2017-02-28",
+          "operation": "Query",
+          "query":   $util.toJson($query),
+          "scanIndexForward":   #if( $context.args.sortDirection )
+            #if( $context.args.sortDirection == "ASC" )
+        true
+            #else
+        false
+            #end
+          #else
+        true
+          #end,
+          "filter":   #if( $context.args.filter )
+        $util.transform.toDynamoDBFilterExpression($ctx.args.filter)
+          #else
+        null
+          #end,
+          "limit": $limit,
+          "nextToken":   #if( $context.args.nextToken )
+        "$context.args.nextToken"
+          #else
+        null
+          #end,
+          "index": "gsi-OperatorCenters"
+        }
+      ResponseMappingTemplate: |-
+        #if( !$result )
+          #set( $result = $ctx.result )
+        #end
+        $util.toJson($result)
+      DataSourceName: !Ref GraphQlDsCenterDataSourceNameParameter
+  GraphQlResolverQuerylistOrders:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Query
+      FieldName: listOrders
+      RequestMappingTemplate: |-
+        #set( $limit = $util.defaultIfNull($context.args.limit, 10) )
+        #set( $ListRequest = {
+          "version": "2017-02-28",
+          "limit": $limit
+        } )
+        #if( $context.args.nextToken )
+          #set( $ListRequest.nextToken = "$context.args.nextToken" )
+        #end
+        #if( $context.args.filter )
+          #set( $ListRequest.filter = $util.parseJson("$util.transform.toDynamoDBFilterExpression($ctx.args.filter)") )
+        #end
+        #if( !$util.isNull($modelQueryExpression)
+                                && !$util.isNullOrEmpty($modelQueryExpression.expression) )
+          $util.qr($ListRequest.put("operation", "Query"))
+          $util.qr($ListRequest.put("query", $modelQueryExpression))
+          #if( !$util.isNull($ctx.args.sortDirection) && $ctx.args.sortDirection == "DESC" )
+            #set( $ListRequest.scanIndexForward = false )
+          #else
+            #set( $ListRequest.scanIndexForward = true )
+          #end
+        #else
+          $util.qr($ListRequest.put("operation", "Scan"))
+        #end
+        $util.toJson($ListRequest)
+      ResponseMappingTemplate: $util.toJson($ctx.result)
+      DataSourceName: !Ref GraphQlDsOrderDataSourceNameParameter
+  GraphQlResolverQuerygetOrderItem:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Query
+      FieldName: getOrderItem
+      RequestMappingTemplate: |-
+        {
+          "version": "2017-02-28",
+          "operation": "GetItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id": $util.dynamodb.toDynamoDBJson($ctx.args.id)
+        } #end
+        }
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsOrderItemDataSourceNameParameter
+  GraphQlResolverMutationdeleteParticipation:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Mutation
+      FieldName: deleteParticipation
+      RequestMappingTemplate: |-
+        #if( $authCondition )
+          #set( $condition = $authCondition )
+          #if( $modelObjectKey )
+            #foreach( $entry in $modelObjectKey.entrySet() )
+              $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#keyCondition$velocityCount)"))
+              $util.qr($condition.expressionNames.put("#keyCondition$velocityCount", "$entry.key"))
+            #end
+          #else
+            $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#id)"))
+            $util.qr($condition.expressionNames.put("#id", "id"))
+          #end
+        #else
+          #if( $modelObjectKey )
+            #set( $condition = {
+          "expression": "",
+          "expressionNames": {}
+        } )
+            #foreach( $entry in $modelObjectKey.entrySet() )
+              #if( $velocityCount == 1 )
+                $util.qr($condition.put("expression", "attribute_exists(#keyCondition$velocityCount)"))
+              #else
+                $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#keyCondition$velocityCount)"))
+              #end
+              $util.qr($condition.expressionNames.put("#keyCondition$velocityCount", "$entry.key"))
+            #end
+          #else
+            #set( $condition = {
+          "expression": "attribute_exists(#id)",
+          "expressionNames": {
+              "#id": "id"
+          }
+        } )
+          #end
+        #end
+        #if( $versionedCondition )
+          $util.qr($condition.put("expression", "($condition.expression) AND $versionedCondition.expression"))
+          $util.qr($condition.expressionNames.putAll($versionedCondition.expressionNames))
+          #set( $expressionValues = $util.defaultIfNull($condition.expressionValues, {}) )
+          $util.qr($expressionValues.putAll($versionedCondition.expressionValues))
+          #set( $condition.expressionValues = $expressionValues )
+        #end
+        {
+          "version": "2017-02-28",
+          "operation": "DeleteItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id": $util.dynamodb.toDynamoDBJson($ctx.args.input.id)
+        } #end,
+          "condition": $util.toJson($condition)
+        }
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsParticipationDataSourceNameParameter
+  GraphQlResolverMutationcreatePriceUnit:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Mutation
+      FieldName: createPriceUnit
+      RequestMappingTemplate: >-
+        ## [Start] Prepare DynamoDB PutItem Request. **
+
+        $util.qr($context.args.input.put("createdAt",
+        $util.defaultIfNull($ctx.args.input.createdAt,
+        $util.time.nowISO8601())))
+
+        $util.qr($context.args.input.put("updatedAt",
+        $util.defaultIfNull($ctx.args.input.updatedAt,
+        $util.time.nowISO8601())))
+
+        $util.qr($context.args.input.put("__typename", "PriceUnit"))
+
+        {
+          "version": "2017-02-28",
+          "operation": "PutItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id":   $util.dynamodb.toDynamoDBJson($util.defaultIfNullOrBlank($ctx.args.input.id, $util.autoId()))
+        } #end,
+          "attributeValues": $util.dynamodb.toMapValuesJson($context.args.input),
+          "condition": {
+              "expression": "attribute_not_exists(#id)",
+              "expressionNames": {
+                  "#id": "id"
+            }
+          }
+        }
+
+        ## [End] Prepare DynamoDB PutItem Request. **
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsPriceUnitDataSourceNameParameter
+  GraphQlResolverProductclosedDays:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Product
+      FieldName: closedDays
+      RequestMappingTemplate: |-
+        #set( $limit = $util.defaultIfNull($context.args.limit, 10) )
+        #set( $query = {
+          "expression": "#connectionAttribute = :connectionAttribute",
+          "expressionNames": {
+              "#connectionAttribute": "productClosedDaysId"
+          },
+          "expressionValues": {
+              ":connectionAttribute": {
+                  "S": "$context.source.id"
+            }
+          }
+        } )
+        {
+          "version": "2017-02-28",
+          "operation": "Query",
+          "query":   $util.toJson($query),
+          "scanIndexForward":   #if( $context.args.sortDirection )
+            #if( $context.args.sortDirection == "ASC" )
+        true
+            #else
+        false
+            #end
+          #else
+        true
+          #end,
+          "filter":   #if( $context.args.filter )
+        $util.transform.toDynamoDBFilterExpression($ctx.args.filter)
+          #else
+        null
+          #end,
+          "limit": $limit,
+          "nextToken":   #if( $context.args.nextToken )
+        "$context.args.nextToken"
+          #else
+        null
+          #end,
+          "index": "gsi-Product.closedDays"
+        }
+      ResponseMappingTemplate: |-
+        #if( !$result )
+          #set( $result = $ctx.result )
+        #end
+        $util.toJson($result)
+      DataSourceName: !Ref GraphQlDsClosedDayDataSourceNameParameter
+  GraphQlResolverMutationupdateProvider:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Mutation
+      FieldName: updateProvider
+      RequestMappingTemplate: >-
+        #if( $authCondition && $authCondition.expression != "" )
+          #set( $condition = $authCondition )
+          #if( $modelObjectKey )
+            #foreach( $entry in $modelObjectKey.entrySet() )
+              $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#keyCondition$velocityCount)"))
+              $util.qr($condition.expressionNames.put("#keyCondition$velocityCount", "$entry.key"))
+            #end
+          #else
+            $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#id)"))
+            $util.qr($condition.expressionNames.put("#id", "id"))
+          #end
+        #else
+          #if( $modelObjectKey )
+            #set( $condition = {
+          "expression": "",
+          "expressionNames": {},
+          "expressionValues": {}
+        } )
+            #foreach( $entry in $modelObjectKey.entrySet() )
+              #if( $velocityCount == 1 )
+                $util.qr($condition.put("expression", "attribute_exists(#keyCondition$velocityCount)"))
+              #else
+                $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#keyCondition$velocityCount)"))
+              #end
+              $util.qr($condition.expressionNames.put("#keyCondition$velocityCount", "$entry.key"))
+            #end
+          #else
+            #set( $condition = {
+          "expression": "attribute_exists(#id)",
+          "expressionNames": {
+              "#id": "id"
+          },
+          "expressionValues": {}
+        } )
+          #end
+        #end
+
+        ## Automatically set the updatedAt timestamp. **
+
+        $util.qr($context.args.input.put("updatedAt",
+        $util.defaultIfNull($ctx.args.input.updatedAt,
+        $util.time.nowISO8601())))
+
+        $util.qr($context.args.input.put("__typename", "Provider"))
+
+        ## Update condition if type is @versioned **
+
+        #if( $versionedCondition )
+          $util.qr($condition.put("expression", "($condition.expression) AND $versionedCondition.expression"))
+          $util.qr($condition.expressionNames.putAll($versionedCondition.expressionNames))
+          $util.qr($condition.expressionValues.putAll($versionedCondition.expressionValues))
+        #end
+
+        #set( $expNames = {} )
+
+        #set( $expValues = {} )
+
+        #set( $expSet = {} )
+
+        #set( $expAdd = {} )
+
+        #set( $expRemove = [] )
+
+        #if( $modelObjectKey )
+          #set( $keyFields = [] )
+          #foreach( $entry in $modelObjectKey.entrySet() )
+            $util.qr($keyFields.add("$entry.key"))
+          #end
+        #else
+          #set( $keyFields = ["id"] )
+        #end
+
+        #foreach( $entry in $util.map.copyAndRemoveAllKeys($context.args.input,
+        $keyFields).entrySet() )
+          #if( !$util.isNull($dynamodbNameOverrideMap) && $dynamodbNameOverrideMap.containsKey("$entry.key") )
+            #set( $entryKeyAttributeName = $dynamodbNameOverrideMap.get("$entry.key") )
+          #else
+            #set( $entryKeyAttributeName = $entry.key )
+          #end
+          #if( $util.isNull($entry.value) )
+            #set( $discard = $expRemove.add("#$entryKeyAttributeName") )
+            $util.qr($expNames.put("#$entryKeyAttributeName", "$entry.key"))
+          #else
+            $util.qr($expSet.put("#$entryKeyAttributeName", ":$entryKeyAttributeName"))
+            $util.qr($expNames.put("#$entryKeyAttributeName", "$entry.key"))
+            $util.qr($expValues.put(":$entryKeyAttributeName", $util.dynamodb.toDynamoDB($entry.value)))
+          #end
+        #end
+
+        #set( $expression = "" )
+
+        #if( !$expSet.isEmpty() )
+          #set( $expression = "SET" )
+          #foreach( $entry in $expSet.entrySet() )
+            #set( $expression = "$expression $entry.key = $entry.value" )
+            #if( $foreach.hasNext() )
+              #set( $expression = "$expression," )
+            #end
+          #end
+        #end
+
+        #if( !$expAdd.isEmpty() )
+          #set( $expression = "$expression ADD" )
+          #foreach( $entry in $expAdd.entrySet() )
+            #set( $expression = "$expression $entry.key $entry.value" )
+            #if( $foreach.hasNext() )
+              #set( $expression = "$expression," )
+            #end
+          #end
+        #end
+
+        #if( !$expRemove.isEmpty() )
+          #set( $expression = "$expression REMOVE" )
+          #foreach( $entry in $expRemove )
+            #set( $expression = "$expression $entry" )
+            #if( $foreach.hasNext() )
+              #set( $expression = "$expression," )
+            #end
+          #end
+        #end
+
+        #set( $update = {} )
+
+        $util.qr($update.put("expression", "$expression"))
+
+        #if( !$expNames.isEmpty() )
+          $util.qr($update.put("expressionNames", $expNames))
+        #end
+
+        #if( !$expValues.isEmpty() )
+          $util.qr($update.put("expressionValues", $expValues))
+        #end
+
+        {
+          "version": "2017-02-28",
+          "operation": "UpdateItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id": {
+              "S": "$context.args.input.id"
+          }
+        } #end,
+          "update": $util.toJson($update),
+          "condition": $util.toJson($condition)
+        }
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsProviderDataSourceNameParameter
+  GraphQlResolverQuerygetService:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Query
+      FieldName: getService
+      RequestMappingTemplate: |-
+        {
+          "version": "2017-02-28",
+          "operation": "GetItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id": $util.dynamodb.toDynamoDBJson($ctx.args.id)
+        } #end
+        }
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsServiceDataSourceNameParameter
+  GraphQlResolverMutationcreateUnavailability:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Mutation
+      FieldName: createUnavailability
+      RequestMappingTemplate: >-
+        ## [Start] Prepare DynamoDB PutItem Request. **
+
+        $util.qr($context.args.input.put("createdAt",
+        $util.defaultIfNull($ctx.args.input.createdAt,
+        $util.time.nowISO8601())))
+
+        $util.qr($context.args.input.put("updatedAt",
+        $util.defaultIfNull($ctx.args.input.updatedAt,
+        $util.time.nowISO8601())))
+
+        $util.qr($context.args.input.put("__typename", "Unavailability"))
+
+        {
+          "version": "2017-02-28",
+          "operation": "PutItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id":   $util.dynamodb.toDynamoDBJson($util.defaultIfNullOrBlank($ctx.args.input.id, $util.autoId()))
+        } #end,
+          "attributeValues": $util.dynamodb.toMapValuesJson($context.args.input),
+          "condition": {
+              "expression": "attribute_not_exists(#id)",
+              "expressionNames": {
+                  "#id": "id"
+            }
+          }
+        }
+
+        ## [End] Prepare DynamoDB PutItem Request. **
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsUnavailabilityDataSourceNameParameter
+  GraphQlResolverMutationupdateUser:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Mutation
+      FieldName: updateUser
+      RequestMappingTemplate: >-
+        #if( $authCondition && $authCondition.expression != "" )
+          #set( $condition = $authCondition )
+          #if( $modelObjectKey )
+            #foreach( $entry in $modelObjectKey.entrySet() )
+              $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#keyCondition$velocityCount)"))
+              $util.qr($condition.expressionNames.put("#keyCondition$velocityCount", "$entry.key"))
+            #end
+          #else
+            $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#id)"))
+            $util.qr($condition.expressionNames.put("#id", "id"))
+          #end
+        #else
+          #if( $modelObjectKey )
+            #set( $condition = {
+          "expression": "",
+          "expressionNames": {},
+          "expressionValues": {}
+        } )
+            #foreach( $entry in $modelObjectKey.entrySet() )
+              #if( $velocityCount == 1 )
+                $util.qr($condition.put("expression", "attribute_exists(#keyCondition$velocityCount)"))
+              #else
+                $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#keyCondition$velocityCount)"))
+              #end
+              $util.qr($condition.expressionNames.put("#keyCondition$velocityCount", "$entry.key"))
+            #end
+          #else
+            #set( $condition = {
+          "expression": "attribute_exists(#id)",
+          "expressionNames": {
+              "#id": "id"
+          },
+          "expressionValues": {}
+        } )
+          #end
+        #end
+
+        ## Automatically set the updatedAt timestamp. **
+
+        $util.qr($context.args.input.put("updatedAt",
+        $util.defaultIfNull($ctx.args.input.updatedAt,
+        $util.time.nowISO8601())))
+
+        $util.qr($context.args.input.put("__typename", "User"))
+
+        ## Update condition if type is @versioned **
+
+        #if( $versionedCondition )
+          $util.qr($condition.put("expression", "($condition.expression) AND $versionedCondition.expression"))
+          $util.qr($condition.expressionNames.putAll($versionedCondition.expressionNames))
+          $util.qr($condition.expressionValues.putAll($versionedCondition.expressionValues))
+        #end
+
+        #set( $expNames = {} )
+
+        #set( $expValues = {} )
+
+        #set( $expSet = {} )
+
+        #set( $expAdd = {} )
+
+        #set( $expRemove = [] )
+
+        #if( $modelObjectKey )
+          #set( $keyFields = [] )
+          #foreach( $entry in $modelObjectKey.entrySet() )
+            $util.qr($keyFields.add("$entry.key"))
+          #end
+        #else
+          #set( $keyFields = ["id"] )
+        #end
+
+        #foreach( $entry in $util.map.copyAndRemoveAllKeys($context.args.input,
+        $keyFields).entrySet() )
+          #if( !$util.isNull($dynamodbNameOverrideMap) && $dynamodbNameOverrideMap.containsKey("$entry.key") )
+            #set( $entryKeyAttributeName = $dynamodbNameOverrideMap.get("$entry.key") )
+          #else
+            #set( $entryKeyAttributeName = $entry.key )
+          #end
+          #if( $util.isNull($entry.value) )
+            #set( $discard = $expRemove.add("#$entryKeyAttributeName") )
+            $util.qr($expNames.put("#$entryKeyAttributeName", "$entry.key"))
+          #else
+            $util.qr($expSet.put("#$entryKeyAttributeName", ":$entryKeyAttributeName"))
+            $util.qr($expNames.put("#$entryKeyAttributeName", "$entry.key"))
+            $util.qr($expValues.put(":$entryKeyAttributeName", $util.dynamodb.toDynamoDB($entry.value)))
+          #end
+        #end
+
+        #set( $expression = "" )
+
+        #if( !$expSet.isEmpty() )
+          #set( $expression = "SET" )
+          #foreach( $entry in $expSet.entrySet() )
+            #set( $expression = "$expression $entry.key = $entry.value" )
+            #if( $foreach.hasNext() )
+              #set( $expression = "$expression," )
+            #end
+          #end
+        #end
+
+        #if( !$expAdd.isEmpty() )
+          #set( $expression = "$expression ADD" )
+          #foreach( $entry in $expAdd.entrySet() )
+            #set( $expression = "$expression $entry.key $entry.value" )
+            #if( $foreach.hasNext() )
+              #set( $expression = "$expression," )
+            #end
+          #end
+        #end
+
+        #if( !$expRemove.isEmpty() )
+          #set( $expression = "$expression REMOVE" )
+          #foreach( $entry in $expRemove )
+            #set( $expression = "$expression $entry" )
+            #if( $foreach.hasNext() )
+              #set( $expression = "$expression," )
+            #end
+          #end
+        #end
+
+        #set( $update = {} )
+
+        $util.qr($update.put("expression", "$expression"))
+
+        #if( !$expNames.isEmpty() )
+          $util.qr($update.put("expressionNames", $expNames))
+        #end
+
+        #if( !$expValues.isEmpty() )
+          $util.qr($update.put("expressionValues", $expValues))
+        #end
+
+        {
+          "version": "2017-02-28",
+          "operation": "UpdateItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id": {
+              "S": "$context.args.input.id"
+          }
+        } #end,
+          "update": $util.toJson($update),
+          "condition": $util.toJson($condition)
+        }
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsUserDataSourceNameParameter
+  GraphQlResolverMutationdeleteUserRole:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Mutation
+      FieldName: deleteUserRole
+      RequestMappingTemplate: |-
+        #if( $authCondition )
+          #set( $condition = $authCondition )
+          #if( $modelObjectKey )
+            #foreach( $entry in $modelObjectKey.entrySet() )
+              $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#keyCondition$velocityCount)"))
+              $util.qr($condition.expressionNames.put("#keyCondition$velocityCount", "$entry.key"))
+            #end
+          #else
+            $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#id)"))
+            $util.qr($condition.expressionNames.put("#id", "id"))
+          #end
+        #else
+          #if( $modelObjectKey )
+            #set( $condition = {
+          "expression": "",
+          "expressionNames": {}
+        } )
+            #foreach( $entry in $modelObjectKey.entrySet() )
+              #if( $velocityCount == 1 )
+                $util.qr($condition.put("expression", "attribute_exists(#keyCondition$velocityCount)"))
+              #else
+                $util.qr($condition.put("expression", "$condition.expression AND attribute_exists(#keyCondition$velocityCount)"))
+              #end
+              $util.qr($condition.expressionNames.put("#keyCondition$velocityCount", "$entry.key"))
+            #end
+          #else
+            #set( $condition = {
+          "expression": "attribute_exists(#id)",
+          "expressionNames": {
+              "#id": "id"
+          }
+        } )
+          #end
+        #end
+        #if( $versionedCondition )
+          $util.qr($condition.put("expression", "($condition.expression) AND $versionedCondition.expression"))
+          $util.qr($condition.expressionNames.putAll($versionedCondition.expressionNames))
+          #set( $expressionValues = $util.defaultIfNull($condition.expressionValues, {}) )
+          $util.qr($expressionValues.putAll($versionedCondition.expressionValues))
+          #set( $condition.expressionValues = $expressionValues )
+        #end
+        {
+          "version": "2017-02-28",
+          "operation": "DeleteItem",
+          "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+          "id": $util.dynamodb.toDynamoDBJson($ctx.args.input.id)
+        } #end,
+          "condition": $util.toJson($condition)
+        }
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsUserRoleDataSourceNameParameter
+  GraphQlResolverUserRoleUseruser:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: UserRoleUser
+      FieldName: user
+      RequestMappingTemplate: |-
+        {
+          "version": "2017-02-28",
+          "operation": "GetItem",
+          "key": {
+              "id": $util.dynamodb.toDynamoDBJson($util.defaultIfNullOrBlank($ctx.source.userRoleUserUserId, "___xamznone____"))
+          }
+        }
+      ResponseMappingTemplate: $util.toJson($context.result)
+      DataSourceName: !Ref GraphQlDsUserDataSourceNameParameter
+  GraphQlResolverQuerysearchOrders:
+    Type: 'AWS::AppSync::Resolver'
+    DependsOn: []
+    Properties:
+      ApiId: !Ref GraphQlApiApiIdParameter
+      TypeName: Query
+      FieldName: searchOrders
+      RequestMappingTemplate: |-
+        #set( $indexPath = "/grdorder-dev/doc/_search" )
+        #set( $nonKeywordFields = ["price", "timeplaced"] )
+        #if( $util.isNullOrEmpty($context.args.sort) )
+          #set( $sortDirection = "desc" )
+          #set( $sortField = "id" )
+        #else
+          #set( $sortDirection = $util.defaultIfNull($context.args.sort.direction, "desc") )
+          #set( $sortField = $util.defaultIfNull($context.args.sort.field, "id") )
+        #end
+        {
+          "version": "2017-02-28",
+          "operation": "GET",
+          "path": "$indexPath",
+          "params": {
+              "body":     {
+                        #if( $context.args.nextToken )"search_after": ["$context.args.nextToken"], #end
+                        "size": #if( $context.args.limit ) $context.args.limit #else 10 #end,
+                        "sort": [{ #if($nonKeywordFields.contains($sortField))    "$sortField" #else "${sortField}.keyword" #end : {    "order" : "$sortDirection"} }],
+                        "query": #if( $context.args.filter )
+        $util.transform.toElasticsearchQueryDSL($ctx.args.filter)
+        #else
+        {
+              "match_all": {}
+          }
+        #end
+                        }
+          }
+        }
+      ResponseMappingTemplate: |-
+        #set( $es_items = [] )
+        #foreach( $entry in $context.result.hits.hits )
+          #if( !$foreach.hasNext )
+            #set( $nextToken = $entry.sort.get(0) )
+          #end
+          $util.qr($es_items.add($entry.get("_source")))
+        #end
+        $util.toJson({
+          "items": $es_items,
+          "total": $ctx.result.hits.total,
+          "nextToken": $nextToken
+        })
+      DataSourceName: !Ref GraphQlDsElasticSearchDataSourceNameParameter
+Outputs: {}
