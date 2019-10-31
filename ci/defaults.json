@@ -25,7 +25,7 @@
   },
   {
     "ParameterKey": "TenantTable",
-    "ParameterValue": "Tenant-Saas"
+    "ParameterValue": "TenantML"
   },
   {
     "ParameterKey": "InstanceType",
@@ -33,7 +33,7 @@
   },
   {
     "ParameterKey": "UserTable",
-    "ParameterValue": "User-Saas"
+    "ParameterValue": "UserML"
   },
   {
     "ParameterKey": "QSS3BucketName",
