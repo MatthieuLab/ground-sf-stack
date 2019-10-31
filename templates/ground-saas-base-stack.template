@@ -543,6 +543,6 @@ Outputs:
     Description: The URL endpoint for the product service
     Value: !GetAtt ALB.Outputs.LoadBalancerUrl
   ApiUrl:
-    Description: The URL endpoint for the product service
+    Description: The URL endpoint for the product service!
     Value: !GetAtt API.Outputs.RootUrl
 ...
