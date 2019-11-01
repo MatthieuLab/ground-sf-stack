@@ -254,7 +254,7 @@ Resources:
           InputArtifacts:
           - Name: App
           OutputArtifacts:
-          - Name: BuildOutput
+          - Name: BuildOutpu
           RunOrder: 1
       - Name: Deploy
         Actions:
@@ -290,7 +290,7 @@ Resources:
               }
           InputArtifacts:
           - Name: Template
-          - Name: BuildOutput
+          - Name: BuildOutpu
           RunOrder: 1
       - Name: Test
         Actions:
