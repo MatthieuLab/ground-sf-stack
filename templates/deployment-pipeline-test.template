@@ -270,18 +270,7 @@ Resources:
             StackName: !Sub ${AWS::StackName}-Service
             Capabilities: CAPABILITY_IAM
             TemplatePath: Template::service.template
-            TemplateConfiguration: >-
-              {
-                "Parameters": {
-                  "Tag": {
-                    "Fn::GetParam": [
-                        "BuildOutput",
-                        "build.json",
-                        "tag"
-                    ]
-                  }
-                }
-              }
+            TemplateConfiguration: Template::config.json
             RoleArn: !Ref CloudFormationExecutionRole
             ParameterOverrides: !Sub |
               {
